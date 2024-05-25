@@ -1,22 +1,136 @@
-<!DOCTYPE html> <html> <head> <style> body { text-align: center; background-color: rgb(255, 255, 255); }
-    input {
-    border-radius: 5px;
-    padding: 10px;
-    }
-    
-    button {
-    border-radius: 20px;
-    background-color: rgb(0, 0, 0);
-    color: rgb(255, 255, 255);
-    padding: 10px 20px;
-    }
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            text-align: center;
+            background-color: rgb(255, 255, 255);
+        }
+        input {
+            border-radius: 5px;
+            padding: 10px;
+            width: 370px; /* Adjusted width */
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button {
+            border-radius: 20px;
+            background-color: rgb(0, 0, 0);
+            color: rgb(255, 255, 255);
+            padding: 10px 20px;
+            margin: 5px;
+        }
+        .output-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .output-container {
+            border: 2px solid rgb(0, 0, 0);
+            border-radius: 10px;
+            padding: 10px;
+            display: inline-block;
+            width: 370px; /* Adjusted width */
+            height: 50px;
+            overflow: hidden;
+            box-sizing: border-box;
+            background-color: rgb(255, 255, 255); 
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .generated-link-label {
+            color: rgb(0, 0, 0);
+            font-weight: bold;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: rgb(255, 255, 255);
+        }
+        .label-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* Right align */
+            width: 400px; /* Adjusted width */
+            margin-bottom: 10px;
+            margin-left: auto; /* Right margin */
+        }
+        .label-container label {
+            margin-right: 10px;
+            color: rgb(0, 0, 0);
+            width: 100px;
+            font-size: 16px;
+        }
+        .form-container {
+            display: inline-block;
+            background-color: rgb(230, 230, 230);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 400px; /* Adjusted width */
+        }
+        .output-container a {
+            color: rgb(0, 0, 0); 
+        }
     </style>
-    
-    </head> <body> <div style="display: inline-block; background-color: rgb(255, 255, 255); padding: 20px;">
-    <label for="client_id" style="color: rgb(0, 0, 0);">Bot id→</label>
-    <input type="text" id="client_id" placeholder="♡"><br><br>
-    
-    <button onclick="generateURL()">れいくんすきだよ</button>
-    
-    <p id="output_url" style="color: rgb(0, 0, 0);"></p> </div> <script> function generateURL() { var clientID = document.getElementById("client_id").value; var url = `https://discord.com/oauth2/authorize?client_id=${clientID}&permissions=1100316985344&scope=bot%20applications.commands`; document.getElementById("output_url").innerHTML = `<a href="${url}" target="_blank" style="color: blue;">${url}</a>`; } </script> </body> </html>
-    
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="label-container">
+                <label for="client_id">Bot id→</label>
+                <input type="text" id="client_id">
+            </div>
+            <br>
+            <div class="output-wrapper">
+                <span class="generated-link-label">生成したリンク</span>
+                <div class="output-container">
+                    <p id="output_url" style="color: rgb(0, 0, 0); margin: 0;"></p>
+                </div>
+            </div>
+            <br>
+            <button onclick="generateURL()">リンク生成</button>
+            <button onclick="copyURL()">コピー</button>
+        </div>
+    </div>
+    <script>
+        function generateURL() {
+            var clientID = document.getElementById("client_id").value;
+            var url = `https://discord.com/oauth2/authorize?client_id=${clientID}&permissions=1100316985344&scope=bot%20applications.commands`;
+            document.getElementById("output_url").innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
+        }
+
+        function copyURL() {
+            var outputUrlElement = document.getElementById("output_url");
+            var link = outputUrlElement.innerText;
+
+            if (!navigator.clipboard) {
+                var textArea = document.createElement("textarea");
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    console.error('Fallback: Oops, unable to copy', err);
+                }
+                document.body.removeChild(textArea);
+            } else {
+                navigator.clipboard.writeText(link).then(function() {
+                    console.log('Async: Copying to clipboard was successful!');
+                }, function(err) {
+                    console.error('Async: Could not copy text: ', err);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
